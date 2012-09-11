@@ -2,20 +2,27 @@
 
 <head></head>
 
-<body onload="hola();">
-
-	<div>Hola</div>
+<body onload="simpleClock();">
+	<center>
+		<div id = "simpleClock">Hola</div>
+	</center>
 
 </body>
 
 <script language="javascript">
 
-	function hola(){
+	function simpleClock(){
 	
-		alert("Sale: " + Date());
+		var hour = new Date();
 	
+		document.getElementById("simpleClock").innerHTML = hour.getHours() + ":" + hour.getMinutes() + ":" + hour.getSeconds();
+		
+		setTimeout(function (){	
+			simpleClock();
+			}, 1000);
+		
 	}
-
+	
 </script>
 
 </html>
