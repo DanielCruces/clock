@@ -2,24 +2,74 @@
 
 <head></head>
 
-<body onload="simpleClock();">
+<body onload="clock();">
 	<center>
-		<div id = "simpleClock">Hola</div>
+		<!-- Very simple clock, no function -->
+		<div id = "simpleClock"></div>
+		
+		<!-- Clock which alows you to choose the 24H or AM/PM view -->
+		<div style = "padding-top: 50px">
+		
+			<div id = "MeridianClock"></div>
+			
+			<!-- Combobox to select the view -->
+			<select onChange = "tipe(this);">
+				<option value = 0>24H</option>
+				<option value = 1>AM/PM</option>
+			</select>
+		
+		</div> <!-- end MeridianClock -->
+		
 	</center>
 
 </body>
 
 <script language="javascript">
 
-	function simpleClock(){
+	var type = 0;
+	var meridian = "pm";
 	
-		var hour = new Date();
+	function clock(){
 	
-		document.getElementById("simpleClock").innerHTML = hour.getHours() + ":" + hour.getMinutes() + ":" + hour.getSeconds();
+		var date = new Date();
+		var hour = date.getHours();
+		var minute = date.getMinutes();
+		var second = date.getSeconds();
+	
+		document.getElementById("simpleClock").innerHTML = hour + ":" + minute + ":" + second;
+		
+		if (type == 1){
+			
+			if (hour > 12){
+				
+				hour -= 12;
+				meridian = "am";
+				
+			}else
+				meridian = "pm";
+				
+			if (hour < 10)
+				hour = "0" + hour;
+			
+			if (minute < 10)
+				minute = "0" + minute;
+			
+		}else
+			meridian = "";
+		
+		document.getElementById("MeridianClock").innerHTML = hour + ":" + minute + ":" + second + meridian;
+		
 		
 		setTimeout(function (){	
-			simpleClock();
+			clock();
 			}, 1000);
+		
+	}//End function clock
+	
+	
+	function tipe(obj){
+		
+		type = obj.value;
 		
 	}
 	
