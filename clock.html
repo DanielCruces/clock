@@ -1,16 +1,31 @@
 <html>
 
-<head></head>
+<head>
+
+	<style type="text/css">
+	
+		.separator{
+			padding-top: 50px;
+		}
+		
+		.error{
+			border-color: red;
+			border-width: 5px;
+		}
+		
+	</style>
+
+</head>
 
 <body onload="clock();">
 	<center>
 		<!-- Very simple clock, no function -->
-		<div id = "simpleClock"></div>
+		<div id = "simpleClock" class = "separator"></div>
 		
 		<!-- Clock which alows you to choose the 24H or AM/PM view -->
-		<div style = "padding-top: 50px">
+		<div class = "separator">
 		
-			<div id = "MeridianClock"></div>
+			<div id = "meridianClock"></div>
 			
 			<!-- Combobox to select the view -->
 			<select onChange = "tipe(this);">
@@ -20,6 +35,22 @@
 		
 		</div> <!-- end MeridianClock -->
 		
+		
+		<div class = "separator">
+		
+			<div id = "alarmClock"> </div>
+			
+			Alarm: 
+			<input type="text" size="2" id = "hour" onkeyup="checkNumber(this)"  />:
+			<input type="text" size="2" id = "minute" onkeyup="checkNumber(this)" />:
+			<input type="text" size="2" id = "second" onkeyup="checkNumber(this)" />
+			
+			<br/>
+			
+			<input type="submit" value = "Set Alarm" onclick="setAlarm();" />
+			
+		</div> <!-- End alarmClock -->
+		
 	</center>
 
 </body>
@@ -28,7 +59,10 @@
 
 	var type = 0;
 	var meridian = "pm";
+	var alarm = "";
+	var alarmSetted = false;
 	
+	//Function in charge of manage all clocks
 	function clock(){
 	
 		var date = new Date();
@@ -36,8 +70,13 @@
 		var minute = date.getMinutes();
 		var second = date.getSeconds();
 	
+		//simpleClock
 		document.getElementById("simpleClock").innerHTML = hour + ":" + minute + ":" + second;
+		//End simpleClock
 		
+		//meridianClock
+		/*Javascript has not an authomatic function to get AM/FM hour, so I had to 
+		create a manual system to emulate the AM/FM*/
 		if (type == 1){
 			
 			if (hour > 12){
@@ -57,8 +96,23 @@
 		}else
 			meridian = "";
 		
-		document.getElementById("MeridianClock").innerHTML = hour + ":" + minute + ":" + second + meridian;
+		document.getElementById("meridianClock").innerHTML = hour + ":" + minute + ":" + second + meridian;
 		
+		//End meridianClock
+		
+		//alarmClock
+		document.getElementById("alarmClock").innerHTML = hour + ":" + minute + ":" + second;
+		
+		var checkAlarm = hour.toString() + minute.toString() + second.toString();
+		
+		if ( checkAlarm == alarm && alarmSetted == true ){
+			
+			alert("alarm is on!!!");
+			alarmSetted = false;
+			
+		}
+		 
+		//end alarmClock
 		
 		setTimeout(function (){	
 			clock();
@@ -66,10 +120,61 @@
 		
 	}//End function clock
 	
-	
+	//Function that changes the format of the meridianClock
 	function tipe(obj){
 		
 		type = obj.value;
+		
+	}
+	
+	//Function in charge of chekc the introduced data is numeric
+	function checkNumber(obj){
+		
+		var isNumber = /^[0-9]+$/;
+		var value = obj.value;
+		
+		if (!value.match(isNumber))
+			obj.value = value.substring(0, value.length - 1 );
+		
+	}
+	
+	//Sets the alarm
+	function setAlarm(){
+		
+		var hour = document.getElementById("hour");
+		var minute = document.getElementById("minute");
+		var second = document.getElementById("second");
+		var ok = true;
+		
+		hour.className = "";
+		minute.className = "";
+		second.className = "";
+		
+		//Checks every value is in a correct range
+		if(hour.value > 23 || hour.value < 0){
+			hour.className = "error";
+			ok = false;	
+		}
+		
+		if (minute.value > 59 || minute.value < 0){
+			minute.className = "error";
+			ok = false;	
+		}
+		
+		if (second.value > 59 || second.value < 0){
+			second.className = "error";
+			ok = false;	
+		}
+		
+		//If every value is a good value, the alarm is setted
+		if (ok){
+		
+			alarm = hour.value + minute.value + second.value;
+			
+			alert("Alarm is setted");
+			alarmSetted = true;
+			
+		}
 		
 	}
 	
